@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const uniqueValidator = require("mongoose-unique-validator");
 const validator = require("validator");
 const zxcvbn = require("zxcvbn");
 const bcrypt = require("bcryptjs");
@@ -8,7 +7,6 @@ const jwt = require("jsonwebtoken");
 const userSchema = new mongoose.Schema({
   userName: {
     type: String,
-    unique: true,
     required: true,
     trim: true,
     validate(value) {
