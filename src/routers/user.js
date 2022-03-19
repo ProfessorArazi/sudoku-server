@@ -1,6 +1,7 @@
 const express = require("express");
 const router = new express.Router();
 const User = require("../Models/user");
+const Score = require("../Models/score");
 
 let topScores = [];
 
@@ -47,38 +48,24 @@ router.post("/users/login", async (req, res) => {
 });
 
 router.post("/users/finish", async (req, res) => {
-  const user = await User.findById(req.body.userScore.userId);
   try {
-    await user.scores.push(req.body.userScore);
-    await user.save();
-    if (topScores.length < 10) {
-      let scores = await User.find({}, "scores -_id");
-
-      topScores = scores
-        .map((x) => x.scores)
-        .flat(Infinity)
-        .sort((a, b) => b.score - a.score)
-        .slice(0, 10)
-        .map((x) => {
-          return {
-            ...x._doc,
-            userGame: x.userId === req.body.userScore.userId ? true : false,
-          };
-        });
-    } else if (req.body.userScore.score > topScores[9]) {
+    let removedScoreId;
+    if (topScores.length === 0) {
+      topScores = await Score.find();
+      topScores.sort((a, b) => b.score.score - a.score.score);
+    }
+    if (req.body.userScore.score > topScores[9].score.score) {
+      removedScoreId = topScores[9]._id;
       topScores.pop();
       topScores.push(req.body.userScore);
-      topScores
-        .sort((a, b) => b.score - a.score)
-        .map((x) => {
-          return {
-            ...x,
-            userGame: x.userId === req.body.userScore.userId ? true : false,
-          };
-        });
+      topScores.sort((a, b) => b.score - a.score);
     }
-    console.log(topScores);
     res.status(200).send(topScores);
+    if (removedScoreId) {
+      await Score.findByIdAndUpdate(removedScoreId, {
+        score: req.body.userScore,
+      });
+    }
   } catch (error) {
     console.log(error);
   }

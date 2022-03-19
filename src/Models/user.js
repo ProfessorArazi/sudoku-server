@@ -39,28 +39,7 @@ const userSchema = new mongoose.Schema({
       }
     },
   },
-  scores: [
-    {
-      score: {
-        type: Number,
-      },
-      mistakes: {
-        type: Number,
-      },
-      clues: {
-        type: Number,
-      },
-      time: {
-        type: String,
-      },
-      userName: {
-        type: String,
-      },
-      userId: {
-        type: String,
-      },
-    },
-  ],
+
   tokens: [
     {
       token: {
