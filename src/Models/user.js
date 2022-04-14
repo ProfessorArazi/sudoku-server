@@ -33,11 +33,6 @@ const userSchema = new mongoose.Schema({
     required: true,
     minlength: 8,
     trim: true,
-    validate(value) {
-      if (zxcvbn(value).score < 2) {
-        throw new Error("invalid password");
-      }
-    },
   },
 
   tokens: [
