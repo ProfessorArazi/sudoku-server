@@ -57,8 +57,8 @@ router.post("/users/finish", async (req, res) => {
     if (req.body.userScore.score > topScores[9].score.score) {
       removedScoreId = topScores[9]._id;
       topScores.pop();
-      topScores.push(req.body.userScore);
-      topScores.sort((a, b) => b.score - a.score);
+      topScores.push({ score: req.body.userScore });
+      topScores.sort((a, b) => b.score.score - a.score.score);
     }
     res.status(200).send(topScores);
     if (removedScoreId) {
